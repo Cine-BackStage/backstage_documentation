@@ -1,30 +1,41 @@
-# 🎬 Backstage Cinema Documentation
+# Website
 
-Welcome to the Backstage Cinema documentation hub! This repository contains all the design guidelines, branding materials, and style references for the Backstage Cinema project.
+This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
 
-## 📚 Documentation
+## Installation
 
-### [🎨 Style Guide](./style_guide.md)
-Complete design system including:
-- Color palette with hex codes
-- Typography guidelines
-- UI usage patterns
-- Logo guidelines
-- Visual references
+```bash
+yarn
+```
 
-### [🏷️ Branding](./branding.md)
-Brand identity and messaging guidelines for Backstage Cinema.
+## Local Development
 
-## 🚀 Quick Start
+```bash
+yarn start
+```
 
-This documentation is designed to be used by developers, designers, and stakeholders working on the Backstage Cinema project. Each document provides specific guidelines and examples for consistent implementation.
+This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
 
-## 📖 How to Use
+## Build
 
-1. **For Designers**: Start with the [Style Guide](./style_guide.md) for color codes, typography, and visual guidelines
-2. **For Developers**: Reference the UI usage section for implementation details
-3. **For Marketing**: Check the [Branding](./branding.md) document for messaging and identity guidelines
+```bash
+yarn build
+```
 
----
+This command generates static content into the `build` directory and can be served using any static contents hosting service.
 
-*No Drama* - Backstage Cinema Documentation
+## Deployment
+
+Using SSH:
+
+```bash
+USE_SSH=true yarn deploy
+```
+
+Not using SSH:
+
+```bash
+GIT_USER=<Your GitHub username> yarn deploy
+```
+
+If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.

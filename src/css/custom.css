@@ -1,0 +1,56 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* Backstage Cinema Brand Colors */
+:root {
+  /* Primary Brand Colors */
+  --ifm-color-primary: #FF8C42; /* Orange Spotlight */
+  --ifm-color-primary-dark: #e67a3a;
+  --ifm-color-primary-darker: #d9732f;
+  --ifm-color-primary-darkest: #b35e27;
+  --ifm-color-primary-light: #ff9e5a;
+  --ifm-color-primary-lighter: #ffa765;
+  --ifm-color-primary-lightest: #ffb985;
+  
+  /* Brand Colors */
+  --backstage-black: #0D0D0D;
+  --backstage-white: #F5F5F5;
+  --backstage-gold: #FFD700;
+  --backstage-yellow: #FFD64D;
+  --backstage-orange: #FF8C42;
+  --backstage-gray: #2E2E2E;
+  --backstage-beige: #F2E6D0;
+  
+  /* Background and Text */
+  --ifm-background-color: var(--backstage-white);
+  --ifm-font-color-base: var(--backstage-black);
+  --ifm-navbar-background-color: var(--backstage-black);
+  --ifm-navbar-link-color: var(--backstage-white);
+  --ifm-navbar-link-hover-color: var(--backstage-gold);
+  
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(255, 215, 0, 0.1);
+}
+
+/* Dark theme with Backstage Cinema colors */
+[data-theme='dark'] {
+  --ifm-color-primary: #FFD700; /* Golden Reel */
+  --ifm-color-primary-dark: #e6c200;
+  --ifm-color-primary-darker: #d9b600;
+  --ifm-color-primary-darkest: #b39600;
+  --ifm-color-primary-light: #ffdc1a;
+  --ifm-color-primary-lighter: #ffe033;
+  --ifm-color-primary-lightest: #ffe866;
+  
+  --ifm-background-color: var(--backstage-black);
+  --ifm-background-surface-color: var(--backstage-gray);
+  --ifm-font-color-base: var(--backstage-white);
+  --ifm-navbar-background-color: var(--backstage-black);
+  --ifm-navbar-link-color: var(--backstage-white);
+  --ifm-navbar-link-hover-color: var(--backstage-gold);
+  
+  --docusaurus-highlighted-code-line-bg: rgba(255, 215, 0, 0.1);
+}
