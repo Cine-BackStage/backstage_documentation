@@ -1,0 +1,291 @@
+@startuml
+!theme metal
+skinparam classAttributeIconSize 0
+title Cinema Management System (Discounts, No Taxes, Buyer Info)
+
+' ===== People & Roles =====
+abstract class Person {
+  +cpf: String   ' Brazilian personal security number
+  +fullName: String
+  +email: String
+  +phone?: String
+  +createdAt: DateTime
+  +updatedAt: DateTime
+}
+
+class Customer extends Person {
+  +birthDate?: LocalDate
+}
+
+class Employee extends Person {
+  +employeeId: String
+  +role: String
+  +hireDate: LocalDate
+  +isActive: boolean
+  +clockIn(): void
+  +clockOut(): void
+}
+
+class Admin extends Employee {
+  +permissions: Set<String>
+  +createEmployee(e: Employee): Employee
+  +deactivateEmployee(employeeCpf: String): void
+  +setPriceForRoomType(rt: RoomType, newPrice: Money): void
+}
+
+' ===== Movies, Rooms, Sessions, Tickets =====
+class Movie {
+  +id: UUID
+  +title: String
+  +durationMin: int
+  +genre?: String
+  +description?: String
+}
+
+enum RoomType {
+  TWO_D
+  THREE_D
+  EXTREME
+}
+
+class RoomTypePrice {
+  +roomType: RoomType
+  +baseTicketPrice: Money
+}
+
+class Seat {
+  +id: String       ' e.g., "A10"
+  +row: String
+  +number: int
+  +isAccessible: boolean
+}
+
+class SeatMap {
+  +id: UUID
+  +rows: int
+  +cols: int
+  +version: int
+  +findSeat(id: String): Seat
+  +allSeats(): List<Seat>
+}
+
+class Room {
+  +id: UUID
+  +name: String
+  +capacity: int
+  +roomType: RoomType
+  +seatMapId: UUID
+  +getSeatMap(): SeatMap
+}
+
+class Session {
+  +id: UUID
+  +startTime: DateTime
+  +endTime: DateTime
+  +status: SessionStatus  ' SCHEDULED | IN_PROGRESS | CANCELED | COMPLETED
+
+  +schedule(): void
+  +start(): void
+  +cancel(reason: String): void
+  +complete(): void
+  +availableSeats(): int
+  +isSeatAvailable(seatId: String): boolean
+  +reserveSeat(seatId: String): boolean
+  +releaseSeat(seatId: String): void
+  +getTicketPrice(): Money  ' derived from RoomTypePrice
+}
+
+interface Sellable {
+  +getSku(): String
+  +getName(): String
+  +getUnitPrice(): Money
+}
+
+class Ticket implements Sellable {
+  +id: UUID
+  +sessionId: UUID
+  +seatId: String
+  +price: Money
+  +issuedAt: DateTime
+
+  +getSku(): String
+  +getName(): String
+  +getUnitPrice(): Money
+}
+
+' ===== Inventory & Stock =====
+abstract class InventoryItem implements Sellable {
+  +sku: String
+  +name: String
+  +unitPrice: Money
+  +qtyOnHand: int
+  +reorderLevel: int
+  +barcode?: String
+
+  +getSku(): String
+  +getName(): String
+  +getUnitPrice(): Money
+  +adjustStock(delta: int, reason: String, by: Employee): void
+  +decrement(quantity: int): void
+  +restock(quantity: int): void
+}
+
+class Food extends InventoryItem {
+  +expiryDate?: LocalDate
+  +isCombo: boolean
+}
+
+class Collectable extends InventoryItem {
+  +category?: String
+  +brand?: String
+}
+
+class InventoryAdjustment {
+  +id: UUID
+  +sku: String
+  +delta: int
+  +reason: String
+  +actorCpf: String
+  +timestamp: DateTime
+}
+
+' ===== Discounts =====
+enum DiscountType {
+  PERCENT
+  AMOUNT
+}
+
+class DiscountCode {
+  +code: String
+  +description?: String
+  +type: DiscountType
+  +value: decimal        ' if PERCENT: 0..100, if AMOUNT: currency units
+  +validFrom: DateTime
+  +validTo: DateTime
+  +cpfRangeStart?: String
+  +cpfRangeEnd?: String
+
+  +isEligible(at: DateTime, buyerCpf: String): boolean
+}
+
+' ===== Sales / POS =====
+class Sale {
+  +id: UUID
+  +createdAt: DateTime
+  +status: SaleStatus   ' OPEN | FINALIZED | CANCELED | REFUNDED
+  +buyerCpf?: String    ' optional; REQUIRED to apply any discount
+  +subTotal: Money
+  +discountTotal: Money
+  +grandTotal: Money
+
+  +setBuyer(c: Customer): void
+  +addItem(item: Sellable, qty: int, unitPrice?: Money): SaleItem
+  +removeItem(lineId: UUID): void
+  +applyDiscount(code: DiscountCode): void   ' precondition: buyerCpf present & code.isEligible()
+  +computeTotals(): void
+  +finalize(payment: Payment): void
+  +cancel(reason: String): void
+}
+
+class SaleItem {
+  +id: UUID
+  +description: String
+  +sku: String
+  +quantity: int
+  +unitPrice: Money
+  +lineTotal: Money
+
+  +recalc(): void
+}
+
+class Payment {
+  +id: UUID
+  +saleId: UUID
+  +method: PaymentMethod  ' CASH | CARD | PIX | OTHER
+  +amount: Money
+  +authCode?: String
+  +paidAt: DateTime
+}
+
+' ===== Services =====
+class PricingService {
+  +priceFor(roomType: RoomType): Money
+}
+
+class SalesReportService {
+  +salesByEmployee(from: DateTime, to: DateTime): Map<Employee, Money>
+  +stockValuation(): Money
+  +topProducts(limit: int, from: DateTime, to: DateTime): List<SaleItem>
+}
+
+' ===== Relationships & Multiplicity =====
+' People
+Admin --|> Employee
+Employee --|> Person
+Customer --|> Person
+Sale "0..1" --> "1" Customer : buyer >
+
+' Movies / Sessions / Rooms
+Movie "1" -- "0..*" Session
+Room  "1" -- "0..*" Session
+Room "1" o-- "1" SeatMap
+SeatMap "1" o-- "1..*" Seat
+Session "1" o-- "0..*" Ticket
+Session "1" -- "1" Room
+Session "1" -- "1" Movie
+
+' Pricing
+RoomTypePrice "1" -- "1" RoomType
+PricingService ..> RoomTypePrice
+Session ..> PricingService
+
+' Inventory
+InventoryItem <|-- Food
+InventoryItem <|-- Collectable
+InventoryItem "1" -- "0..*" InventoryAdjustment
+
+' Sales
+Sale "1" o-- "1..*" SaleItem : contains >
+Sale "1" o-- "1..*" Payment  : payments >
+Sale "1" -- "0..*" DiscountCode : applied >
+SaleItem "*" --> "1" Sellable : item >
+Ticket ..> Sellable
+InventoryItem ..> Sellable
+Employee "1" -- "0..*" Sale : cashier >
+
+' Auditing
+class AuditLog {
+  +id: UUID
+  +actorCpf: String
+  +action: String
+  +targetType: String
+  +targetId: String
+  +timestamp: DateTime
+  +metadataJson?: String
+}
+Employee "1" -- "0..*" AuditLog
+AuditLog ..> Sale
+AuditLog ..> InventoryItem
+AuditLog ..> Session
+
+' ===== Enums =====
+enum SaleStatus {
+  OPEN
+  FINALIZED
+  CANCELED
+  REFUNDED
+}
+enum PaymentMethod {
+  CASH
+  CARD
+  PIX
+  OTHER
+}
+enum SessionStatus {
+  SCHEDULED
+  IN_PROGRESS
+  CANCELED
+  COMPLETED
+}
+
+@enduml
