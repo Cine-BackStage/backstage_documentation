@@ -2,46 +2,24 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# Welcome to Backstage Cinema Documentation
 
-Let's discover **Docusaurus in less than 5 minutes**.
+Welcome to the **Backstage Cinema** documentation portal. Here you'll find comprehensive information about our brand guidelines, design standards, and system architecture.
+
+## What's Inside
+
+This documentation covers:
+
+- **Brand Guidelines**: Our visual identity, colors, and brand standards
+- **Style Guide**: Design principles and usage guidelines  
+- **System Architecture**: Technical documentation and class diagrams
 
 ## Getting Started
 
-Get started by **creating a new site**.
+Navigate through the sections using the sidebar to explore different aspects of the Backstage Cinema documentation.
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+## About Backstage Cinema
 
-### What you'll need
+**No Drama - Design & Brand Guidelines**
 
-- [Node.js](https://nodejs.org/en/download/) version 18.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
-
-## Generate a new site
-
-Generate a new Docusaurus site using the **classic template**.
-
-The classic template will automatically be added to your project after you run the command:
-
-```bash
-npm init docusaurus@latest my-website classic
-```
-
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
-
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+Backstage Cinema is committed to providing clear, consistent, and professional documentation for all stakeholders.
