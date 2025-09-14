@@ -1,0 +1,240 @@
+// =====================================
+// Enums
+// =====================================
+Enum sale_status {
+  OPEN
+  FINALIZED
+  CANCELED
+  REFUNDED
+}
+
+Enum payment_method {
+  CASH
+  CARD
+  PIX
+  OTHER
+}
+
+Enum session_status {
+  SCHEDULED
+  IN_PROGRESS
+  CANCELED
+  COMPLETED
+}
+
+Enum room_type {
+  TWO_D
+  THREE_D
+  EXTREME
+}
+
+Enum discount_type {
+  PERCENT
+  AMOUNT
+}
+
+// =====================================
+// People & Roles
+// =====================================
+Table person {
+  cpf char(11) [pk]
+  full_name varchar(200)
+  email varchar(200) [unique]
+  phone varchar(40)
+  created_at datetime
+  updated_at datetime
+
+  Note: 'Base entity for Customer/Employee/Admin'
+}
+
+Table customer {
+  cpf char(11) [pk, ref: > person.cpf]
+  birth_date date
+}
+
+Table employee {
+  cpf char(11) [pk, ref: > person.cpf]
+  employee_id varchar(40) [unique]
+  role varchar(80)
+  hire_date date
+  is_active boolean
+}
+
+Table admin {
+  cpf char(11) [pk, ref: > employee.cpf]
+  permissions text
+}
+
+// =====================================
+// Movies, Rooms, Sessions, Seats
+// =====================================
+Table movie {
+  id int [pk, increment]
+  title varchar(200)
+  duration_min int
+  genre varchar(80)
+  description text
+}
+
+Table seat_map {
+  id int [pk, increment]
+  rows int
+  cols int
+  version int
+}
+
+Table room {
+  id int [pk, increment]
+  name varchar(80) [unique]
+  capacity int
+  room_type room_type
+  seatmap_id int [ref: > seat_map.id]
+}
+
+Table seat {
+  seatmap_id int [ref: > seat_map.id]
+  id varchar(10) // e.g. "A10"
+  row_label varchar(10)
+  number int
+  is_accessible boolean
+
+  Note: 'Seat identity is relative to its seat map. Composite PK ensures uniqueness per seat map.'
+  Indexes {
+    (seatmap_id, id) [pk]
+    (seatmap_id, row_label, number) [unique]
+  }
+}
+
+Table session {
+  id int [pk, increment]
+  movie_id int [ref: > movie.id]
+  room_id int [ref: > room.id]
+  start_time datetime
+  end_time datetime
+  status session_status
+}
+
+Table ticket {
+  id int [pk, increment]
+  session_id int [ref: > session.id]
+  seatmap_id int
+  seat_id varchar(10)
+  price decimal(10,2)
+  issued_at datetime
+
+  Note: 'Composite FK into seat; unique per session to avoid double-selling.'
+  Indexes {
+    (seatmap_id, seat_id)
+    (session_id, seatmap_id, seat_id) [unique]
+  }
+}
+
+// Composite foreign key not expressible inline:
+Ref: ticket.(seatmap_id, seat_id) > seat.(seatmap_id, id)
+
+// =====================================
+// Inventory & Stock
+// =====================================
+Table inventory_item {
+  sku varchar(40) [pk]
+  name varchar(200)
+  unit_price decimal(10,2)
+  qty_on_hand int
+  reorder_level int
+  barcode varchar(64)
+}
+
+Table food {
+  sku varchar(40) [pk, ref: > inventory_item.sku]
+  expiry_date date
+  is_combo boolean
+}
+
+Table collectable {
+  sku varchar(40) [pk, ref: > inventory_item.sku]
+  category varchar(80)
+  brand varchar(80)
+}
+
+Table inventory_adjustment {
+  id int [pk, increment]
+  sku varchar(40) [ref: > inventory_item.sku]
+  delta int
+  reason varchar(120)
+  actor_cpf char(11) [ref: > person.cpf]
+  timestamp datetime
+}
+
+// =====================================
+// Sales / POS
+// =====================================
+Table sale {
+  id int [pk, increment]
+  created_at datetime
+  status sale_status
+  buyer_cpf char(11) [ref: > customer.cpf] // nullable if buyer is anonymous
+  sub_total decimal(10,2)
+  discount_total decimal(10,2)
+  grand_total decimal(10,2)
+}
+
+Table sale_item {
+  id int [pk, increment]
+  sale_id int [ref: > sale.id]
+  description varchar(200)
+  sku varchar(40) [ref: > inventory_item.sku] // nullable for ticket lines
+  quantity int
+  unit_price decimal(10,2)
+  line_total decimal(10,2)
+}
+
+Table payment {
+  id int [pk, increment]
+  sale_id int [ref: > sale.id]
+  method payment_method
+  amount decimal(10,2)
+  auth_code varchar(60)
+  paid_at datetime
+}
+
+// =====================================
+// Discounts
+// =====================================
+Table discount_code {
+  code varchar(40) [pk]
+  description varchar(200)
+  type discount_type
+  value decimal(10,2)
+  valid_from datetime
+  valid_to datetime
+  cpf_range_start char(11)
+  cpf_range_end char(11)
+}
+
+Table sale_discount {
+  sale_id int [ref: > sale.id]
+  code varchar(40) [ref: > discount_code.code]
+  applied_at datetime
+
+  Indexes {
+    (sale_id, code) [pk]
+  }
+}
+
+// =====================================
+// Auditing & Pricing
+// =====================================
+Table audit_log {
+  id int [pk, increment]
+  actor_cpf char(11) [ref: > person.cpf]
+  action varchar(80)
+  target_type varchar(60)
+  target_id varchar(60)
+  timestamp datetime
+  metadata_json text
+}
+
+Table room_type_price {
+  room_type room_type [pk]
+  price decimal(10,2)
+}
