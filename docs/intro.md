@@ -8,15 +8,39 @@ Welcome to the **Backstage Cinema** documentation portal. Here you'll find compr
 
 ## What's Inside
 
-This documentation covers:
+This comprehensive documentation covers:
 
+### 🎨 Brand & Design
 - **Brand Guidelines**: Our visual identity, colors, and brand standards
-- **Style Guide**: Design principles and usage guidelines  
-- **System Architecture**: Technical documentation and class diagrams
+- **Style Guide**: Design principles and usage guidelines for consistent UI/UX
+
+### 🏗️ System Architecture  
+- **Class Diagrams**: Technical system architecture and component relationships
+- **Database Schema**: Complete database structure, relationships, and data models
+
+### 🚀 API & Development
+- **API Documentation**: Complete REST API reference with Swagger access
+- **Development Setup**: Local development environment setup and workflow
 
 ## Getting Started
 
-Navigate through the sections using the sidebar to explore different aspects of the Backstage Cinema documentation.
+### For Designers & Marketers
+Start with [Brand Guidelines](./branding) and [Style Guide](./style_guide) to understand our visual identity.
+
+### For Developers
+Begin with [Development Setup](./development_setup) to get your local environment running, then explore the [API Documentation](./api_documentation).
+
+### For System Architects
+Review the [Class Diagrams](./classes_diagram) and [Database Schema](./database_schema) for technical system understanding.
+
+## Quick Access Links
+
+- 🌐 **API Base**: `http://localhost:3000`
+- 📊 **Swagger UI**: `http://localhost:3000/api/docs`
+- 🗄️ **Database Admin**: `http://localhost:8080` (pgAdmin)
+- ❤️ **Health Check**: `http://localhost:3000/health`
+
+Navigate through the sections using the sidebar to explore all aspects of the Backstage Cinema system.
 
 ## About Backstage Cinema
 

@@ -15,9 +15,30 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
 const sidebars: SidebarsConfig = {
   tutorialSidebar: [
     'intro',
-    'branding',
-    'style_guide',
-    'classes_diagram',
+    {
+      type: 'category',
+      label: '🎨 Brand & Design',
+      items: [
+        'branding',
+        'style_guide',
+      ],
+    },
+    {
+      type: 'category',
+      label: '🏗️ System Architecture',
+      items: [
+        'classes_diagram',
+        'database_schema',
+      ],
+    },
+    {
+      type: 'category',
+      label: '🚀 API & Development',
+      items: [
+        'api_documentation',
+        'development_setup',
+      ],
+    },
   ],
 };
 
