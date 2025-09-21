@@ -21,6 +21,7 @@ const sidebars: SidebarsConfig = {
       items: [
         'branding',
         'style_guide',
+        'prototype',
       ],
     },
     {
