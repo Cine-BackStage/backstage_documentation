@@ -1,12 +1,36 @@
-# Classes Diagram Overview
+# Multi-Tenant Classes Diagram Overview
 
-This document describes the **main classes, enums, and relationships** of the Cinema Management System. It summarizes the UML class diagram into a **readable reference**.
+This document describes the **main classes, enums, and relationships** of the Multi-Tenant Cinema Management System. It summarizes the UML class diagram into a **readable reference**.
 
-[![Cinema Management System Class Diagram](../assets/diagram_classes_v1.png)](../assets/diagram_classes_v1.png)
+[![Multi-Tenant Cinema Management System Class Diagram](../assets/diagram_classes_v2.png)](../assets/diagram_classes_v2.png)
 
 ---
 
-## 1. People & Roles
+## 1. Multi-Tenant Core Classes
+
+### **Company**
+
+- **ID**: `id` (UUID)
+- **Fields**: `name`, `cnpj`, `tradeName?`, `address?`, `city?`, `state?`, `zipCode?`, `phone?`, `email?`, `website?`, `isActive`, `createdAt`, `updatedAt`
+- **Methods**: `activate()`, `deactivate()`
+- **Purpose**: Central tenant entity that owns all business data. Each company operates as an isolated tenant.
+
+### **SystemAdmin**
+
+- **ID**: `id` (UUID)
+- **Fields**: `username`, `email`, `passwordHash`, `isActive`, `lastLogin?`, `createdAt`
+- **Methods**: `createCompany()`, `activateCompany()`, `deactivateCompany()`
+- **Purpose**: Cross-tenant administrators who can manage multiple companies and platform-wide operations.
+
+### **CompanySubscription**
+
+- **ID**: `companyId` (UUID)
+- **Fields**: `plan`, `startDate`, `endDate?`, `maxEmployees`, `maxRooms`, `isActive`, `monthlyFee`
+- **Purpose**: Defines subscription limits and billing for each company tenant.
+
+---
+
+## 2. People & Roles
 
 ### **Person (abstract)**
 
@@ -16,137 +40,159 @@ This document describes the **main classes, enums, and relationships** of the Ci
 
 ### **Customer (extends Person)**
 
-- **Fields**: `birthDate?`
-- **Notes**: Used when a sale must record buyer info (especially for discounts).
+- **ID**: `[cpf, companyId]` (Compound primary key)
+- **Fields**: `companyId` (UUID), `birthDate?`, `loyaltyPoints`
+- **Notes**: Scoped to company. Used when a sale must record buyer info (especially for discounts).
 
 ### **Employee (extends Person)**
 
-- **Fields**: `employeeId`, `role`, `hireDate`, `isActive`
+- **ID**: `[cpf, companyId]` (Compound primary key)
+- **Fields**: `companyId` (UUID), `employeeId`, `role`, `hireDate`, `isActive`, `passwordHash`, `permissions`, `lastLogin?`
 - **Methods**: `clockIn()`, `clockOut()`
-- **Purpose**: Tracks staff that can make sales or stock adjustments.
+- **Purpose**: Company-scoped staff that can make sales or stock adjustments. Authentication includes company context.
 
-### **Admin (extends Employee)**
+### **TimeEntry**
 
-- **Fields**: `permissions`
-- **Methods**:
-  - `createEmployee(e: Employee)`
-  - `deactivateEmployee(cpf)`
-  - `setPriceForRoomType(rt, newPrice)`
-- **Purpose**: Higher-level control of employees and pricing.
+- **ID**: `id` (UUID)
+- **Fields**: `companyId` (UUID), `employeeCpf`, `entryType`, `timestamp`, `notes?`, `ipAddress?`, `location?`
+- **EntryType**: `CLOCK_IN`, `CLOCK_OUT`, `BREAK_START`, `BREAK_END`
+- **Purpose**: Tracks employee work hours and break times within each company.
 
 ---
 
-## 2. Movies, Rooms, and Sessions
+## 3. Movies, Rooms, and Sessions
 
 ### **Movie**
 
-- **Fields**: `id`, `title`, `durationMin`, `genre?`, `description?`
-- **Notes**: A movie can have multiple scheduled sessions.
+- **ID**: `id` (UUID)
+- **Fields**: `companyId` (UUID), `title`, `durationMin`, `genre?`, `description?`, `rating?`, `releaseDate?`, `isActive`
+- **Notes**: Company-scoped movies. Each company manages its own movie catalog.
 
 ### **Room**
 
-- **Fields**: `id`, `name`, `capacity`, `roomType`, `seatMapId`
+- **ID**: `id` (UUID)
+- **Fields**: `companyId` (UUID), `name`, `capacity`, `roomType`, `seatMapId`, `isActive`
 - **Methods**: `getSeatMap()`
-- **Notes**: Each room has a **seat map** and a **room type** (2D, 3D, Extreme).
+- **Notes**: Company-scoped rooms with seat maps and room types (2D, 3D, IMAX, EXTREME, VIP).
+
+### **RoomTypePrice**
+
+- **ID**: `[companyId, roomType]` (Compound primary key)
+- **Fields**: `companyId` (UUID), `roomType`, `baseTicketPrice`, `updatedAt`
+- **Purpose**: Company-specific pricing for different room types. Allows each tenant to set their own ticket prices.
 
 ### **SeatMap**
 
-- **Fields**: `id`, `rows`, `cols`, `version`
+- **ID**: `id` (UUID)
+- **Fields**: `companyId` (UUID), `name`, `rows`, `cols`, `version`, `layout` (JSON)
 - **Methods**: `findSeat(id)`, `allSeats()`
-- **Relations**: Owns many `Seat`.
+- **Relations**: Owns many `Seat`
+- **Purpose**: Company-scoped seat layout configuration with flexible JSON-based seat arrangements.
 
 ### **Seat**
 
-- **Fields**: `id` (e.g. "A10"), `row`, `number`, `isAccessible`.
+- **ID**: `id` (e.g. "A10")
+- **Fields**: `seatMapId`, `rowLabel`, `number`, `isAccessible`, `isActive`
+- **Purpose**: Individual seats within a seat map. Not directly tenant-scoped (scoped through SeatMap).
 
 ### **Session**
 
-- **Fields**: `id`, `startTime`, `endTime`, `status`
-- **Methods**: `schedule()`, `start()`, `cancel()`, `complete()`,  
-  `availableSeats()`, `reserveSeat(seatId)`, `releaseSeat(seatId)`, `getTicketPrice()`
-- **Relations**: Belongs to one `Movie` and one `Room`, issues many `Tickets`.
+- **ID**: `id` (UUID)
+- **Fields**: `companyId` (UUID), `movieId`, `roomId`, `startTime`, `endTime`, `status`, `basePrice`
+- **Methods**: `schedule()`, `start()`, `cancel()`, `complete()`, `availableSeats()`, `reserveSeat(seatId)`
+- **Relations**: Belongs to one `Movie` and one `Room`, issues many `Tickets`
+- **Purpose**: Company-scoped movie showings with pricing and seat management.
 
-### **Ticket (implements Sellable)**
+### **Ticket**
 
-- **Fields**: `id`, `sessionId`, `seatId`, `price`, `issuedAt`
-- **Methods**: `getSku()`, `getName()`, `getUnitPrice()`
-- **Notes**: Represents a purchased seat for a session.
+- **ID**: `id` (UUID)
+- **Fields**: `companyId` (UUID), `sessionId`, `seatId`, `saleId`, `price`, `status`, `issuedAt`, `usedAt?`, `qrCode`
+- **Status**: `ISSUED`, `USED`, `REFUNDED`
+- **Purpose**: Company-scoped ticket for specific seat and session with QR code for validation.
 
 ---
 
-## 3. Inventory & Stock
+## 4. Inventory & Stock
 
-### **InventoryItem (abstract, implements Sellable)**
+### **InventoryItem (abstract)**
 
-- **Fields**: `sku`, `name`, `unitPrice`, `qtyOnHand`, `reorderLevel`, `barcode?`
-- **Methods**: `adjustStock()`, `decrement()`, `restock()`
-- **Notes**: Base for physical goods sold.
+- **ID**: `[sku, companyId]` (Compound primary key)
+- **Fields**: `companyId` (UUID), `sku`, `name`, `unitPrice`, `qtyOnHand`, `reorderLevel`, `barcode?`, `isActive`, `createdAt`, `updatedAt`
+- **Methods**: `adjustStock(delta, reason, by)`, `decrement()`, `restock()`
+- **Purpose**: Company-scoped base class for sellable physical goods.
 
 ### **Food (extends InventoryItem)**
 
-- **Fields**: `expiryDate?`, `isCombo`.
+- **Fields**: `expiryDate?`, `isCombo`, `category?`
+- **Purpose**: Food and beverage items with expiration tracking.
 
 ### **Collectable (extends InventoryItem)**
 
-- **Fields**: `category?`, `brand?`.
+- **Fields**: `category?`, `brand?`
+- **Purpose**: Merchandise and collectible items.
 
 ### **InventoryAdjustment**
 
-- **Fields**: `id`, `sku`, `delta`, `reason`, `actorCpf`, `timestamp`
-- **Purpose**: Log of every stock change.
+- **ID**: `id` (UUID)
+- **Fields**: `companyId` (UUID), `sku`, `delta`, `reason`, `actorCpf`, `timestamp`, `notes?`
+- **Purpose**: Company-scoped log of every stock change for audit trail.
 
 ---
 
-## 4. Sales / POS
+## 5. Sales / POS
 
 ### **Sale**
 
-- **Fields**:
-  - `id`, `createdAt`, `status`
-  - `buyerCpf?` (optional; required to apply discounts)
-  - `subTotal`, `discountTotal`, `grandTotal`
-- **Methods**:
-  - `setBuyer(c: Customer)`
-  - `addItem(item, qty, unitPrice?)`
-  - `removeItem(lineId)`
-  - `applyDiscount(code)` (_requires buyerCpf & eligibility check_)
-  - `computeTotals()`, `finalize(payment)`, `cancel(reason)`
-- **Relations**: Has many `SaleItem`, `Payment`, and applied `DiscountCode`.
+- **ID**: `id` (UUID)
+- **Fields**: `companyId` (UUID), `createdAt`, `status`, `cashierCpf`, `buyerCpf?`, `subTotal`, `discountTotal`, `taxTotal`, `grandTotal`
+- **Status**: `OPEN`, `FINALIZED`, `CANCELED`, `REFUNDED`
+- **Methods**: `setBuyer()`, `addItem()`, `applyDiscount()`, `computeTotals()`, `finalize()`, `cancel()`
+- **Relations**: Has many `SaleItem`, `Payment`, and applied `DiscountCode`
+- **Purpose**: Company-scoped point-of-sale transactions with employee tracking.
 
 ### **SaleItem**
 
-- **Fields**: `id`, `description`, `sku`, `quantity`, `unitPrice`, `lineTotal`
+- **ID**: `id` (UUID)
+- **Fields**: `companyId` (UUID), `saleId`, `description`, `sku?`, `sessionId?`, `seatId?`, `quantity`, `unitPrice`, `lineTotal`
 - **Methods**: `recalc()`
-- **Purpose**: One line of a sale.
+- **Purpose**: Individual line items in a sale, supporting both inventory items and tickets.
 
 ### **Payment**
 
-- **Fields**: `id`, `saleId`, `method`, `amount`, `authCode?`, `paidAt`.
-- **Notes**: No refund capability.
+- **ID**: `id` (UUID)
+- **Fields**: `companyId` (UUID), `saleId`, `method`, `amount`, `authCode?`, `paidAt`
+- **Method**: `CASH`, `CARD`, `PIX`, `OTHER`
+- **Purpose**: Company-scoped payment records for sales.
+
+### **SaleDiscount**
+
+- **ID**: `[saleId, code]` (Compound primary key)
+- **Fields**: `saleId`, `code`, `appliedAt`, `discountAmount`
+- **Purpose**: Junction table linking sales to applied discount codes with applied amounts.
 
 ---
 
-## 5. Discounts
+## 6. Discounts
 
 ### **DiscountCode**
 
-- **Fields**:
-  - `code`, `description?`, `type` (PERCENT/AMOUNT), `value`
-  - `validFrom`, `validTo`
-  - `cpfRangeStart?`, `cpfRangeEnd?`
+- **ID**: `[code, companyId]` (Compound primary key)
+- **Fields**: `companyId` (UUID), `code`, `description?`, `type`, `value`, `validFrom`, `validTo`, `cpfRangeStart?`, `cpfRangeEnd?`, `maxUses?`, `currentUses`, `isActive`
+- **Type**: `PERCENT`, `AMOUNT`, `BOGO` (Buy One Get One)
 - **Methods**: `isEligible(at, buyerCpf)`
-- **Relations**: Applied to `Sale`.
-- **Rules**: Cannot be used unless `buyerCpf` is set.
+- **Relations**: Applied to `Sale` through `SaleDiscount`
+- **Purpose**: Company-scoped discount codes with usage tracking and eligibility rules.
 
 ---
 
-## 6. Auditing & Reporting
+## 7. Auditing & Reporting
 
 ### **AuditLog**
 
-- **Fields**: `id`, `actorCpf`, `action`, `targetType`, `targetId`, `timestamp`, `metadataJson?`
-- **Relations**: Linked to actions on `Sale`, `InventoryItem`, `Session`.
-- **Purpose**: Traceability of employee actions.
+- **ID**: `id` (UUID)
+- **Fields**: `companyId` (UUID), `actorCpf`, `action`, `targetType`, `targetId?`, `timestamp`, `metadataJson?`, `ipAddress?`, `userAgent?`
+- **Relations**: Linked to actions on `Sale`, `InventoryItem`, `Session`, etc.
+- **Purpose**: Company-scoped audit trail for employee actions and system events.
 
 ### **PricingService**
 
@@ -162,23 +208,39 @@ This document describes the **main classes, enums, and relationships** of the Ci
 
 ---
 
-## 7. Enums
+## 8. Enums
 
+- **EmployeeRole**: `ADMIN`, `MANAGER`, `CASHIER`, `MAINTENANCE`, `SECURITY`
+- **TimeEntryType**: `CLOCK_IN`, `CLOCK_OUT`, `BREAK_START`, `BREAK_END`
 - **SaleStatus**: `OPEN`, `FINALIZED`, `CANCELED`, `REFUNDED`
 - **PaymentMethod**: `CASH`, `CARD`, `PIX`, `OTHER`
 - **SessionStatus**: `SCHEDULED`, `IN_PROGRESS`, `CANCELED`, `COMPLETED`
-- **RoomType**: `TWO_D`, `THREE_D`, `EXTREME`
-- **DiscountType**: `PERCENT`, `AMOUNT`
+- **RoomType**: `TWO_D`, `THREE_D`, `IMAX`, `EXTREME`, `VIP`
+- **DiscountType**: `PERCENT`, `AMOUNT`, `BOGO`
+- **TicketStatus**: `ISSUED`, `USED`, `REFUNDED`
+- **SubscriptionPlan**: `BASIC`, `PREMIUM`, `ENTERPRISE`
 
 ---
 
-## 8. Relationships (Highlights)
+## 9. Relationships (Highlights)
 
-- **Person hierarchy**: `Customer`, `Employee`, `Admin` all extend `Person`.
-- **Movie → Session → Ticket**: A movie has sessions, sessions issue tickets.
-- **Room → Session**: Sessions occur in rooms, room type defines pricing.
-- **SeatMap → Seat**: Rooms are linked to seat maps.
-- **Sale → SaleItem, Payment, DiscountCode**: Each sale aggregates items, payments, and optional discounts.
-- **InventoryItem → Food/Collectable**: Specialized stock items.
-- **InventoryAdjustment**: Tied to `InventoryItem` changes.
-- **AuditLog**: Records who did what (linked by CPF).
+### **Multi-Tenant Core**
+- **Company → All Business Entities**: Every business entity includes `companyId` for complete data isolation
+- **SystemAdmin → Company**: Cross-tenant administrators can manage multiple companies
+- **Company → CompanySubscription**: One-to-one relationship defining tenant limits and billing
+
+### **Business Entity Relationships**
+- **Person hierarchy**: `Customer`, `Employee` both extend `Person` with company scoping
+- **Employee → TimeEntry**: Employees track work hours within their company
+- **Movie → Session → Ticket**: Company-scoped movie scheduling and ticketing workflow
+- **Room → Session**: Company rooms host sessions, room type defines tenant-specific pricing
+- **SeatMap → Seat**: Company-scoped seat layout management
+- **Sale → SaleItem, Payment, SaleDiscount**: Company-scoped POS with multi-tenant discounts
+- **InventoryItem → Food/Collectable**: Company-specific inventory with stock tracking
+- **InventoryAdjustment**: Company-scoped audit trail for stock changes
+- **AuditLog**: Complete activity tracking within company boundaries
+
+### **Data Isolation**
+- All compound primary keys include `companyId` where applicable (Customer, Employee)
+- Foreign key relationships respect tenant boundaries
+- Cross-tenant access only available to SystemAdmin role

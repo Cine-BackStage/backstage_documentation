@@ -1,0 +1,398 @@
+@startuml
+!theme metal
+skinparam classAttributeIconSize 0
+title Multi-Tenant Cinema Management System
+
+' ===== Multi-Tenancy Core =====
+class Company {
+  +id: UUID
+  +name: String
+  +cnpj: String           ' Brazilian company identifier
+  +tradeName?: String     ' Commercial name
+  +address?: String
+  +city?: String
+  +state?: String
+  +zipCode?: String
+  +phone?: String
+  +email?: String
+  +website?: String
+  +isActive: boolean
+  +createdAt: DateTime
+  +updatedAt: DateTime
+
+  +activate(): void
+  +deactivate(): void
+}
+
+' ===== People & Roles (Company-scoped) =====
+abstract class Person {
+  +cpf: String            ' Brazilian personal security number
+  +fullName: String
+  +email: String
+  +phone?: String
+  +createdAt: DateTime
+  +updatedAt: DateTime
+}
+
+class Customer extends Person {
+  +companyId: UUID         ' Multi-tenant key
+  +birthDate?: LocalDate
+  +loyaltyPoints: int
+}
+
+class Employee extends Person {
+  +companyId: UUID         ' Multi-tenant key
+  +employeeId: String      ' Unique within company
+  +role: EmployeeRole
+  +hireDate: LocalDate
+  +isActive: boolean
+  +passwordHash: String
+  +permissions: JSON
+  +lastLogin?: DateTime
+
+  +clockIn(): void
+  +clockOut(): void
+}
+
+class TimeEntry {
+  +id: UUID
+  +companyId: UUID         ' Multi-tenant key
+  +employeeCpf: String
+  +entryType: TimeEntryType ' CLOCK_IN | CLOCK_OUT | BREAK_START | BREAK_END
+  +timestamp: DateTime
+  +notes?: String
+  +ipAddress?: String
+  +location?: String
+}
+
+' ===== Movies (Company-scoped) =====
+class Movie {
+  +id: UUID
+  +companyId: UUID         ' Multi-tenant key
+  +title: String
+  +durationMin: int
+  +genre?: String
+  +description?: String
+  +rating?: String
+  +releaseDate?: LocalDate
+  +isActive: boolean
+}
+
+' ===== Theaters & Rooms (Company-scoped) =====
+enum RoomType {
+  TWO_D
+  THREE_D
+  IMAX
+  EXTREME
+  VIP
+}
+
+class RoomTypePrice {
+  +companyId: UUID         ' Multi-tenant key
+  +roomType: RoomType
+  +baseTicketPrice: Money
+  +updatedAt: DateTime
+}
+
+class Seat {
+  +id: String              ' e.g., "A10"
+  +seatMapId: UUID
+  +rowLabel: String
+  +number: int
+  +isAccessible: boolean
+  +isActive: boolean
+}
+
+class SeatMap {
+  +id: UUID
+  +companyId: UUID         ' Multi-tenant key
+  +name: String
+  +rows: int
+  +cols: int
+  +version: int
+  +layout: JSON            ' Flexible seat layout configuration
+}
+
+class Room {
+  +id: UUID
+  +companyId: UUID         ' Multi-tenant key
+  +name: String
+  +capacity: int
+  +roomType: RoomType
+  +seatMapId: UUID
+  +isActive: boolean
+}
+
+class Session {
+  +id: UUID
+  +companyId: UUID         ' Multi-tenant key
+  +movieId: UUID
+  +roomId: UUID
+  +startTime: DateTime
+  +endTime: DateTime
+  +status: SessionStatus   ' SCHEDULED | IN_PROGRESS | CANCELED | COMPLETED
+  +basePrice: Money        ' Can override room type price
+
+  +availableSeats(): int
+  +reserveSeat(seatId: String): boolean
+}
+
+' ===== Inventory (Company-scoped) =====
+abstract class InventoryItem {
+  +sku: String             ' Unique within company
+  +companyId: UUID         ' Multi-tenant key
+  +name: String
+  +unitPrice: Money
+  +qtyOnHand: int
+  +reorderLevel: int
+  +barcode?: String
+  +isActive: boolean
+  +createdAt: DateTime
+  +updatedAt: DateTime
+
+  +adjustStock(delta: int, reason: String, by: Employee): void
+}
+
+class Food extends InventoryItem {
+  +expiryDate?: LocalDate
+  +isCombo: boolean
+  +category?: String
+}
+
+class Collectable extends InventoryItem {
+  +category?: String
+  +brand?: String
+}
+
+class InventoryAdjustment {
+  +id: UUID
+  +companyId: UUID         ' Multi-tenant key
+  +sku: String
+  +delta: int
+  +reason: String
+  +actorCpf: String        ' Employee who made adjustment
+  +timestamp: DateTime
+  +notes?: String
+}
+
+' ===== Discounts (Company-scoped) =====
+enum DiscountType {
+  PERCENT
+  AMOUNT
+  BOGO                     ' Buy One Get One
+}
+
+class DiscountCode {
+  +code: String            ' Unique within company
+  +companyId: UUID         ' Multi-tenant key
+  +description?: String
+  +type: DiscountType
+  +value: decimal
+  +validFrom: DateTime
+  +validTo: DateTime
+  +cpfRangeStart?: String
+  +cpfRangeEnd?: String
+  +maxUses?: int
+  +currentUses: int
+  +isActive: boolean
+
+  +isEligible(at: DateTime, buyerCpf: String): boolean
+}
+
+' ===== Sales (Company-scoped) =====
+class Sale {
+  +id: UUID
+  +companyId: UUID         ' Multi-tenant key
+  +createdAt: DateTime
+  +status: SaleStatus      ' OPEN | FINALIZED | CANCELED | REFUNDED
+  +cashierCpf: String      ' Employee who processed sale
+  +buyerCpf?: String       ' Customer (optional)
+  +subTotal: Money
+  +discountTotal: Money
+  +taxTotal: Money         ' Future tax support
+  +grandTotal: Money
+
+  +addItem(item: Sellable, qty: int): SaleItem
+  +applyDiscount(code: String): void
+  +finalize(payment: Payment): void
+}
+
+class SaleItem {
+  +id: UUID
+  +saleId: UUID
+  +description: String
+  +sku?: String            ' For inventory items
+  +sessionId?: UUID        ' For tickets
+  +seatId?: String         ' For tickets
+  +quantity: int
+  +unitPrice: Money
+  +lineTotal: Money
+}
+
+class SaleDiscount {
+  +saleId: UUID
+  +code: String
+  +appliedAt: DateTime
+  +discountAmount: Money
+}
+
+class Payment {
+  +id: UUID
+  +companyId: UUID         ' Multi-tenant key
+  +saleId: UUID
+  +method: PaymentMethod   ' CASH | CARD | PIX | OTHER
+  +amount: Money
+  +authCode?: String
+  +paidAt: DateTime
+}
+
+' ===== Tickets (Company-scoped) =====
+class Ticket {
+  +id: UUID
+  +companyId: UUID         ' Multi-tenant key
+  +sessionId: UUID
+  +seatId: String
+  +saleId: UUID
+  +price: Money
+  +status: TicketStatus    ' ISSUED | USED | REFUNDED
+  +issuedAt: DateTime
+  +usedAt?: DateTime
+  +qrCode: String          ' For validation
+}
+
+' ===== Audit (Company-scoped) =====
+class AuditLog {
+  +id: UUID
+  +companyId: UUID         ' Multi-tenant key
+  +actorCpf: String        ' Employee who performed action
+  +action: String
+  +targetType: String
+  +targetId?: String
+  +timestamp: DateTime
+  +metadataJson?: String
+  +ipAddress?: String
+  +userAgent?: String
+}
+
+' ===== System Admin (Cross-tenant) =====
+class SystemAdmin {
+  +id: UUID
+  +username: String
+  +email: String
+  +passwordHash: String
+  +isActive: boolean
+  +lastLogin?: DateTime
+  +createdAt: DateTime
+
+  +createCompany(company: Company): Company
+  +activateCompany(companyId: UUID): void
+  +deactivateCompany(companyId: UUID): void
+}
+
+class CompanySubscription {
+  +companyId: UUID
+  +plan: SubscriptionPlan   ' BASIC | PREMIUM | ENTERPRISE
+  +startDate: DateTime
+  +endDate?: DateTime
+  +maxEmployees: int
+  +maxRooms: int
+  +isActive: boolean
+  +monthlyFee: Money
+}
+
+' ===== Relationships =====
+' Company relationships
+Company "1" -- "0..*" Customer
+Company "1" -- "0..*" Employee
+Company "1" -- "0..*" Movie
+Company "1" -- "0..*" Room
+Company "1" -- "0..*" Session
+Company "1" -- "0..*" SeatMap
+Company "1" -- "0..*" InventoryItem
+Company "1" -- "0..*" Sale
+Company "1" -- "0..*" DiscountCode
+Company "1" -- "0..*" RoomTypePrice
+Company "1" -- "0..*" AuditLog
+Company "1" -- "0..*" TimeEntry
+Company "1" -- "0..*" Ticket
+Company "1" -- "0..*" Payment
+Company "1" -- "1" CompanySubscription
+
+' System admin relationships
+SystemAdmin "0..*" -- "0..*" Company : manages >
+
+' People relationships
+Employee --|> Person
+Customer --|> Person
+Employee "1" -- "0..*" TimeEntry
+Employee "1" -- "0..*" Sale : cashier >
+Customer "0..1" -- "0..*" Sale : buyer >
+
+' Movie/Session relationships
+Movie "1" -- "0..*" Session
+Room "1" -- "0..*" Session
+Session "1" -- "0..*" Ticket
+SeatMap "1" -- "0..*" Seat
+Room "1" -- "1" SeatMap
+
+' Inventory relationships
+InventoryItem <|-- Food
+InventoryItem <|-- Collectable
+InventoryItem "1" -- "0..*" InventoryAdjustment
+
+' Sales relationships
+Sale "1" o-- "1..*" SaleItem
+Sale "1" o-- "1..*" Payment
+Sale "1" -- "0..*" SaleDiscount
+DiscountCode "1" -- "0..*" SaleDiscount
+
+' ===== Enums =====
+enum EmployeeRole {
+  ADMIN
+  MANAGER
+  CASHIER
+  MAINTENANCE
+  SECURITY
+}
+
+enum TimeEntryType {
+  CLOCK_IN
+  CLOCK_OUT
+  BREAK_START
+  BREAK_END
+}
+
+enum SaleStatus {
+  OPEN
+  FINALIZED
+  CANCELED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  PIX
+  OTHER
+}
+
+enum SessionStatus {
+  SCHEDULED
+  IN_PROGRESS
+  CANCELED
+  COMPLETED
+}
+
+enum TicketStatus {
+  ISSUED
+  USED
+  REFUNDED
+}
+
+enum SubscriptionPlan {
+  BASIC
+  PREMIUM
+  ENTERPRISE
+}
+
+@enduml

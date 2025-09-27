@@ -38,6 +38,15 @@ const sidebars: SidebarsConfig = {
       items: [
         'api_documentation',
         'development_setup',
+        'authentication_guide',
+      ],
+    },
+    {
+      type: 'category',
+      label: '🏢 Multi-Tenant System',
+      items: [
+        'database_setup_guide',
+        'multi_tenant_testing_guide',
       ],
     },
   ],
