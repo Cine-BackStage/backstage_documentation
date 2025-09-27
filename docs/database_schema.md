@@ -388,6 +388,6 @@ The database schema supports migrations for version control:
 
 - [API Documentation](./api_documentation.md)
 - [Class Diagram](./classes_diagram.md)  
-- [User Stories](../epics-and-user-stories.md)
+- [User Stories](./epics_and_user_stories.md)
 
 For database administration and maintenance procedures, see the backend repository's database documentation.

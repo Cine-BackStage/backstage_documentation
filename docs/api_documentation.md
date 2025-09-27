@@ -301,7 +301,7 @@ Visit `http://localhost:3000/api` in your browser for an interactive API explore
 ## 📚 Additional Resources
 
 - [Database Schema Documentation](./database_schema.md)
-- [User Stories and Epics](../epics-and-user-stories.md)
+- [User Stories and Epics](./epics_and_user_stories.md)
 - [System Architecture](./classes_diagram.md)
 - [Development Setup](./development_setup.md)
 

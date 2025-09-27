@@ -305,8 +305,8 @@ docker-compose exec api npm run seed:multitenant
 
 ## 📚 **Related Documentation**
 
-- [Multi-Tenant Testing Guide](./MULTI-TENANT-TESTING-GUIDE.md) - How to test the multi-tenant system
-- [Multi-Tenant Migration Guide](../README-MULTITENANT-MIGRATION.md) - How the migration was performed
+- [Multi-Tenant Testing Guide](./multi_tenant_testing_guide.md) - How to test the multi-tenant system
+- [Authentication Guide](./authentication_guide.md) - Multi-tenant authentication setup
 - [API Documentation](http://localhost:3000/api/docs/) - Swagger API documentation
 
 **🗄️ Your database is now fully accessible and documented for development and administration!**

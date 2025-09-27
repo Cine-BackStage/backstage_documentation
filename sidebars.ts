@@ -17,6 +17,13 @@ const sidebars: SidebarsConfig = {
     'intro',
     {
       type: 'category',
+      label: '📋 Business Requirements',
+      items: [
+        'epics_and_user_stories',
+      ],
+    },
+    {
+      type: 'category',
       label: '🎨 Brand & Design',
       items: [
         'branding',
