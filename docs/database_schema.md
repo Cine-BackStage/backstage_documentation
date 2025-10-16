@@ -2,6 +2,16 @@
 
 This document provides comprehensive documentation of the Multi-Tenant Backstage Cinema database schema, including tables, relationships, and data isolation patterns.
 
+## 📊 Physical Database Diagram
+
+![Multi-Tenant Database Schema](../assets/physical_database_diagram_v2.png)
+
+The diagram above shows the complete physical database structure with all tables, relationships, and multi-tenant architecture patterns.
+
+### Diagram Source Code
+
+The diagram is generated from code using [dbdiagram.io](https://dbdiagram.io/). The source DBML file is available at [`database-schema.dbml`](../../database-schema.dbml) and can be imported into dbdiagram.io for editing and regeneration.
+
 ## 📋 Overview
 
 The multi-tenant cinema management system uses **PostgreSQL 15** as its primary database, following a **company-scoped relational design** that supports:

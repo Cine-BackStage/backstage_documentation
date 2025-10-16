@@ -1,0 +1,492 @@
+// Multi-Tenant Cinema Management System - Database Schema
+// Generated from Prisma schema
+// Use at https://dbdiagram.io/
+
+// ===== ENUMS =====
+
+Enum session_status {
+  SCHEDULED
+  IN_PROGRESS
+  CANCELED
+  COMPLETED
+}
+
+Enum room_type {
+  TWO_D
+  THREE_D
+  IMAX
+  EXTREME
+  VIP
+}
+
+Enum sale_status {
+  OPEN
+  FINALIZED
+  CANCELED
+  REFUNDED
+}
+
+Enum employee_role {
+  CASHIER
+  MANAGER
+  ADMIN
+  MAINTENANCE
+  SECURITY
+}
+
+Enum time_entry_type {
+  CLOCK_IN
+  CLOCK_OUT
+  BREAK_START
+  BREAK_END
+}
+
+Enum payment_method {
+  CASH
+  CARD
+  PIX
+  OTHER
+}
+
+Enum ticket_status {
+  ISSUED
+  USED
+  REFUNDED
+}
+
+Enum discount_type {
+  PERCENT
+  AMOUNT
+  BOGO
+}
+
+Enum subscription_plan {
+  BASIC
+  PREMIUM
+  ENTERPRISE
+}
+
+// ===== MULTI-TENANCY CORE =====
+
+Table company {
+  id uuid [pk]
+  name varchar(200)
+  cnpj varchar(18) [unique, note: 'Brazilian company identifier']
+  trade_name varchar(200)
+  address varchar(500)
+  city varchar(100)
+  state varchar(2)
+  zip_code varchar(10)
+  phone varchar(20)
+  email varchar(200)
+  website varchar(200)
+  is_active boolean [default: true]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    is_active
+    cnpj
+  }
+}
+
+Table company_subscription {
+  company_id uuid [pk, ref: - company.id]
+  plan subscription_plan
+  start_date date
+  end_date date
+  max_employees int
+  max_rooms int
+  is_active boolean [default: true]
+  monthly_fee decimal(10,2)
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table system_admin {
+  id uuid [pk]
+  username varchar(50) [unique]
+  email varchar(200) [unique]
+  password_hash varchar(255)
+  is_active boolean [default: true]
+  last_login timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+// ===== PEOPLE (COMPANY-SCOPED) =====
+
+Table person {
+  cpf varchar(11) [pk, note: 'Brazilian personal ID']
+  full_name varchar(200)
+  email varchar(200)
+  phone varchar(20)
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    email
+  }
+}
+
+Table customer {
+  cpf varchar(11) [ref: > person.cpf]
+  company_id uuid [ref: > company.id]
+  birth_date date
+  loyalty_points int [default: 0]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (cpf, company_id) [pk]
+    company_id
+  }
+}
+
+Table employee {
+  cpf varchar(11) [ref: > person.cpf]
+  company_id uuid [ref: > company.id]
+  employee_id varchar(20)
+  role employee_role
+  hire_date date
+  is_active boolean [default: true]
+  password_hash varchar(255)
+  permissions json
+  last_login timestamp
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (cpf, company_id) [pk]
+    (company_id, employee_id) [unique]
+    company_id
+    (company_id, is_active)
+    (company_id, role)
+  }
+}
+
+Table time_entry {
+  id uuid [pk]
+  company_id uuid [ref: > company.id]
+  employee_cpf varchar(11)
+  entry_type time_entry_type
+  timestamp timestamp
+  notes varchar(500)
+  ip_address varchar(45)
+  location varchar(100)
+
+  indexes {
+    company_id
+    (company_id, employee_cpf)
+    (company_id, timestamp)
+    (company_id, entry_type)
+  }
+}
+
+// ===== MOVIES & SESSIONS (COMPANY-SCOPED) =====
+
+Table movie {
+  id uuid [pk]
+  company_id uuid [ref: > company.id]
+  title varchar(200)
+  duration_min int
+  genre varchar(80)
+  description text
+  rating varchar(10)
+  poster_url varchar(500)
+  release_date date
+  is_active boolean [default: true]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    company_id
+    (company_id, is_active)
+  }
+}
+
+Table seat_map {
+  id uuid [pk]
+  company_id uuid [ref: > company.id]
+  name varchar(100)
+  rows int
+  cols int
+  version int [default: 1]
+  layout json [note: 'Flexible seat layout configuration']
+
+  indexes {
+    company_id
+  }
+}
+
+Table seat {
+  seat_map_id uuid [ref: > seat_map.id]
+  id varchar(10)
+  row_label varchar(5)
+  number int
+  is_accessible boolean [default: false]
+  is_active boolean [default: true]
+
+  indexes {
+    (seat_map_id, id) [pk]
+    (seat_map_id, is_active)
+  }
+}
+
+Table room {
+  id uuid [pk]
+  company_id uuid [ref: > company.id]
+  name varchar(80)
+  capacity int
+  room_type room_type
+  seat_map_id uuid [ref: > seat_map.id]
+  is_active boolean [default: true]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (company_id, name) [unique]
+    company_id
+    (company_id, is_active)
+  }
+}
+
+Table room_type_price {
+  company_id uuid [ref: > company.id]
+  room_type room_type
+  price decimal(10,2)
+  updated_at timestamp
+
+  indexes {
+    (company_id, room_type) [pk]
+  }
+}
+
+Table session {
+  id uuid [pk]
+  company_id uuid [ref: > company.id]
+  movie_id uuid [ref: > movie.id]
+  room_id uuid [ref: > room.id]
+  start_time timestamp
+  end_time timestamp
+  base_price decimal(10,2) [note: 'Can override room type price']
+  status session_status [default: 'SCHEDULED']
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    company_id
+    (company_id, movie_id)
+    (company_id, room_id)
+    (company_id, start_time)
+  }
+}
+
+// ===== TICKETS (COMPANY-SCOPED) =====
+
+Table ticket {
+  id uuid [pk]
+  company_id uuid [ref: > company.id]
+  session_id uuid [ref: > session.id]
+  seat_map_id uuid
+  seat_id varchar(10)
+  sale_id uuid [ref: > sale.id]
+  price decimal(10,2)
+  status ticket_status [default: 'ISSUED']
+  issued_at timestamp
+  used_at timestamp
+  qr_code varchar(100) [unique]
+
+  indexes {
+    (company_id, session_id, seat_map_id, seat_id) [unique]
+    company_id
+    (company_id, session_id)
+    (company_id, status)
+  }
+}
+
+// ===== INVENTORY (COMPANY-SCOPED) =====
+
+Table inventory_item {
+  company_id uuid [ref: > company.id]
+  sku varchar(50)
+  name varchar(200)
+  unit_price decimal(10,2)
+  qty_on_hand int
+  reorder_level int
+  barcode varchar(50)
+  is_active boolean [default: true]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (company_id, sku) [pk]
+    company_id
+    (company_id, is_active)
+    (company_id, barcode)
+  }
+}
+
+Table food {
+  company_id uuid
+  sku varchar(50)
+  expiry_date date
+  is_combo boolean [default: false]
+  category varchar(100)
+
+  indexes {
+    (company_id, sku) [pk]
+  }
+}
+
+Table collectable {
+  company_id uuid
+  sku varchar(50)
+  category varchar(100)
+  brand varchar(100)
+
+  indexes {
+    (company_id, sku) [pk]
+  }
+}
+
+Table inventory_adjustment {
+  id uuid [pk]
+  company_id uuid [ref: > company.id]
+  sku varchar(50)
+  delta int [note: 'Quantity change (+/-)']
+  reason varchar(200)
+  actor_cpf varchar(11)
+  timestamp timestamp
+  notes varchar(500)
+
+  indexes {
+    company_id
+    (company_id, sku)
+    (company_id, timestamp)
+  }
+}
+
+// ===== DISCOUNTS (COMPANY-SCOPED) =====
+
+Table discount_code {
+  company_id uuid [ref: > company.id]
+  code varchar(50)
+  description varchar(200)
+  type discount_type
+  value decimal(10,2)
+  valid_from timestamp
+  valid_to timestamp
+  cpf_range_start varchar(11)
+  cpf_range_end varchar(11)
+  max_uses int
+  current_uses int [default: 0]
+  is_active boolean [default: true]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (company_id, code) [pk]
+    company_id
+    (company_id, is_active)
+    (company_id, valid_from, valid_to)
+  }
+}
+
+// ===== SALES (COMPANY-SCOPED) =====
+
+Table sale {
+  id uuid [pk]
+  company_id uuid [ref: > company.id]
+  cashier_cpf varchar(11)
+  buyer_cpf varchar(11)
+  sub_total decimal(10,2) [default: 0]
+  discount_total decimal(10,2) [default: 0]
+  tax_total decimal(10,2) [default: 0]
+  grand_total decimal(10,2) [default: 0]
+  status sale_status [default: 'OPEN']
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    company_id
+    (company_id, cashier_cpf)
+    (company_id, buyer_cpf)
+    (company_id, created_at)
+    (company_id, status)
+  }
+}
+
+Table sale_item {
+  id uuid [pk]
+  sale_id uuid [ref: > sale.id]
+  company_id uuid [ref: > company.id]
+  description varchar(200)
+  sku varchar(50)
+  session_id uuid
+  seat_id varchar(10)
+  quantity int
+  unit_price decimal(10,2)
+  line_total decimal(10,2)
+
+  indexes {
+    sale_id
+    company_id
+  }
+}
+
+Table sale_discount {
+  sale_id uuid [ref: > sale.id]
+  company_id uuid
+  code varchar(50)
+  applied_at timestamp
+  discount_amount decimal(10,2)
+
+  indexes {
+    (sale_id, company_id, code) [pk]
+  }
+}
+
+Table payment {
+  id uuid [pk]
+  company_id uuid [ref: > company.id]
+  sale_id uuid [ref: > sale.id]
+  method payment_method
+  amount decimal(10,2)
+  auth_code varchar(100)
+  paid_at timestamp
+
+  indexes {
+    company_id
+    (company_id, sale_id)
+  }
+}
+
+// ===== AUDIT (COMPANY-SCOPED) =====
+
+Table audit_log {
+  id uuid [pk]
+  company_id uuid [ref: > company.id]
+  actor_cpf varchar(11)
+  action varchar(100)
+  target_type varchar(50)
+  target_id varchar(100)
+  timestamp timestamp
+  metadata_json json
+  ip_address varchar(45)
+  user_agent varchar(500)
+
+  indexes {
+    company_id
+    (company_id, actor_cpf)
+    (company_id, timestamp)
+    (company_id, action)
+    (company_id, target_type)
+  }
+}
+
+// ===== FOREIGN KEY RELATIONSHIPS =====
+
+Ref: food.(company_id, sku) > inventory_item.(company_id, sku)
+Ref: collectable.(company_id, sku) > inventory_item.(company_id, sku)
+Ref: ticket.(seat_map_id, seat_id) > seat.(seat_map_id, id)
