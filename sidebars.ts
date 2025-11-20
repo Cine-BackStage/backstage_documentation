@@ -56,6 +56,13 @@ const sidebars: SidebarsConfig = {
         'multi_tenant_testing_guide',
       ],
     },
+    {
+      type: 'category',
+      label: '📄 Legal & Compliance',
+      items: [
+        'privacy_policy',
+      ],
+    },
   ],
 };
 
