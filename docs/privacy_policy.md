@@ -1,269 +1,266 @@
-# Política de Privacidade - Backstage Cinema Management
-
-**Última atualização:** 20 de novembro de 2025
+# Privacy Policy - Backstage Cinema Management
+
+**Last Updated:** November 20, 2025
 
-## 1. Introdução
-
-A **Backstage Cinema Management** ("nós", "nosso" ou "aplicativo") respeita a privacidade dos usuários e está comprometida em proteger as informações pessoais coletadas através de nosso aplicativo móvel e sistema de gestão de cinemas.
-
-Esta Política de Privacidade descreve como coletamos, usamos, armazenamos e compartilhamos suas informações pessoais quando você utiliza nossos serviços.
-
-Ao utilizar o Backstage Cinema Management, você concorda com a coleta e uso de informações de acordo com esta política.
+## 1. Introduction
+
+**Backstage Cinema Management** ("we", "our" or "application") respects user privacy and is committed to protecting personal information collected through our mobile application and cinema management system.
+
+This Privacy Policy describes how we collect, use, store, and share your personal information when you use our services.
+
+By using Backstage Cinema Management, you agree to the collection and use of information in accordance with this policy.
 
-## 2. Informações que Coletamos
+## 2. Information We Collect
 
-### 2.1. Informações Fornecidas Diretamente por Você
+### 2.1. Information You Provide Directly
 
-Coletamos as seguintes informações quando você cria uma conta ou utiliza nossos serviços:
+We collect the following information when you create an account or use our services:
 
-#### Dados de Cadastro de Empresa
-- **CNPJ** (Cadastro Nacional da Pessoa Jurídica)
-- **Nome da empresa** (Razão social e nome fantasia)
-- **Endereço comercial** (logradouro, cidade, estado, CEP)
-- **Telefone comercial**
-- **E-mail corporativo**
-- **Website** (opcional)
+#### Company Registration Data
+- **Business Registration Number** (Tax ID)
+- **Company Name** (Legal and trade name)
+- **Business Address** (Street, city, state, ZIP code)
+- **Business Phone**
+- **Corporate Email**
+- **Website** (optional)
 
-#### Dados de Funcionários
-- **CPF** (Cadastro de Pessoa Física)
-- **Nome completo**
-- **E-mail**
-- **Telefone**
-- **Função/cargo** (administrador, gerente, caixa, etc.)
-- **Data de contratação**
-- **Credenciais de acesso** (senha criptografada)
+#### Employee Data
+- **Tax ID Number**
+- **Full Name**
+- **Email Address**
+- **Phone Number**
+- **Job Role/Position** (administrator, manager, cashier, etc.)
+- **Hire Date**
+- **Access Credentials** (encrypted password)
 
-#### Dados de Clientes
-- **CPF** (opcional, para programa de fidelidade)
-- **Nome completo**
-- **E-mail**
-- **Telefone**
-- **Data de nascimento**
-- **Pontos de fidelidade**
+#### Customer Data
+- **Tax ID** (optional, for loyalty program)
+- **Full Name**
+- **Email Address**
+- **Phone Number**
+- **Date of Birth**
+- **Loyalty Points**
 
-### 2.2. Informações Coletadas Automaticamente
+### 2.2. Automatically Collected Information
 
-#### Dados de Uso do Sistema
-- **Logs de acesso** (data, hora, ações realizadas)
-- **Endereço IP**
-- **Tipo e versão do dispositivo**
-- **Sistema operacional**
-- **Informações de sessão**
-- **Dados de desempenho do aplicativo**
+#### System Usage Data
+- **Access Logs** (date, time, actions performed)
+- **IP Address**
+- **Device Type and Version**
+- **Operating System**
+- **Session Information**
+- **Application Performance Data**
 
-#### Dados Transacionais
-- **Histórico de vendas** (ingressos, produtos de bar/confeitaria)
-- **Métodos de pagamento utilizados** (sem armazenar dados completos de cartão)
-- **Valor e data das transações**
-- **Sessões de cinema visualizadas/compradas**
+#### Transaction Data
+- **Sales History** (tickets, concession items)
+- **Payment Methods Used** (without storing complete card data)
+- **Transaction Amount and Date**
+- **Movie Sessions Viewed/Purchased**
 
-### 2.3. Informações sobre Inventário e Operações
+### 2.3. Inventory and Operations Information
 
-- **Cadastro de filmes** (título, gênero, classificação, duração)
-- **Informações de salas** (capacidade, tipo, mapa de assentos)
-- **Dados de estoque** (produtos, quantidades, validade)
-- **Controle de ponto** (entrada/saída de funcionários)
+- **Movie Catalog** (title, genre, rating, duration)
+- **Theater Information** (capacity, type, seat maps)
+- **Inventory Data** (products, quantities, expiration dates)
+- **Time Tracking** (employee clock in/out)
 
-## 3. Como Usamos Suas Informações
+## 3. How We Use Your Information
 
-Utilizamos as informações coletadas para os seguintes propósitos:
+We use the collected information for the following purposes:
 
-### 3.1. Prestação de Serviços
-- Gerenciar contas de empresa e funcionários
-- Processar vendas de ingressos e produtos
-- Controlar sessões de cinema e ocupação de salas
-- Gerenciar inventário e estoque
-- Emitir relatórios de vendas e análises
+### 3.1. Service Delivery
+- Manage company and employee accounts
+- Process ticket and product sales
+- Control movie sessions and theater occupancy
+- Manage inventory and stock
+- Generate sales reports and analytics
 
-### 3.2. Programa de Fidelidade
-- Acumular e gerenciar pontos de clientes
-- Oferecer descontos e promoções personalizadas
-- Enviar comunicações sobre benefícios (com seu consentimento)
+### 3.2. Loyalty Program
+- Accumulate and manage customer points
+- Offer personalized discounts and promotions
+- Send communications about benefits (with your consent)
 
-### 3.3. Autenticação e Segurança
-- Verificar identidade de usuários
-- Prevenir fraudes e acessos não autorizados
-- Proteger a integridade do sistema
-- Realizar auditorias de segurança
+### 3.3. Authentication and Security
+- Verify user identity
+- Prevent fraud and unauthorized access
+- Protect system integrity
+- Conduct security audits
 
-### 3.4. Melhoria do Serviço
-- Analisar padrões de uso do aplicativo
-- Desenvolver novos recursos
-- Corrigir erros e melhorar desempenho
-- Fornecer suporte técnico
+### 3.4. Service Improvement
+- Analyze application usage patterns
+- Develop new features
+- Fix errors and improve performance
+- Provide technical support
 
-### 3.5. Conformidade Legal
-- Cumprir obrigações fiscais e contábeis
-- Atender requisitos legais e regulatórios
-- Responder a ordens judiciais quando aplicável
+### 3.5. Legal Compliance
+- Fulfill tax and accounting obligations
+- Meet legal and regulatory requirements
+- Respond to court orders when applicable
 
-## 4. Base Legal para Processamento de Dados (LGPD)
+## 4. Legal Basis for Data Processing
 
-Processamos seus dados pessoais com base nas seguintes hipóteses legais previstas na Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018):
+We process your personal data based on the following legal grounds:
 
-- **Execução de contrato:** Para fornecer os serviços contratados
-- **Consentimento:** Para envio de comunicações de marketing (quando aplicável)
-- **Legítimo interesse:** Para prevenção de fraudes e segurança do sistema
-- **Cumprimento de obrigação legal:** Para atender requisitos fiscais e regulatórios
-- **Exercício regular de direitos:** Para defesa em processos judiciais
+- **Contract Performance:** To provide contracted services
+- **Consent:** For marketing communications (when applicable)
+- **Legitimate Interest:** For fraud prevention and system security
+- **Legal Obligation:** To meet tax and regulatory requirements
+- **Rights Exercise:** For defense in legal proceedings
 
-## 5. Compartilhamento de Informações
+## 5. Information Sharing
 
-### 5.1. NÃO Compartilhamos ou Vendemos Dados Pessoais
+### 5.1. We Do NOT Sell or Rent Personal Data
 
-Nós **NÃO** vendemos, alugamos ou comercializamos suas informações pessoais com terceiros para fins de marketing.
+We **DO NOT** sell, rent, or trade your personal information with third parties for marketing purposes.
 
-### 5.2. Compartilhamento Limitado
+### 5.2. Limited Sharing
 
-Podemos compartilhar informações apenas nas seguintes situações:
+We may share information only in the following situations:
 
-#### Provedores de Serviço
-- **Hospedagem em nuvem** (AWS, Google Cloud, Azure) - para armazenamento seguro de dados
-- **Provedores de pagamento** - apenas dados necessários para processar transações
-- **Serviços de backup** - para garantir continuidade do serviço
+#### Service Providers
+- **Cloud Hosting** (AWS, Google Cloud, Azure) - for secure data storage
+- **Payment Processors** - only data necessary to process transactions
+- **Backup Services** - to ensure service continuity
 
-#### Conformidade Legal
-- Autoridades governamentais mediante ordem judicial
-- Órgãos reguladores quando exigido por lei
-- Advogados em caso de litígios
+#### Legal Compliance
+- Government authorities upon court order
+- Regulatory agencies when required by law
+- Legal counsel in case of litigation
 
-#### Transferência de Negócio
-Em caso de fusão, aquisição ou venda da empresa, seus dados podem ser transferidos, mas continuarão protegidos por esta política.
+#### Business Transfer
+In case of merger, acquisition, or sale of the company, your data may be transferred but will remain protected by this policy.
 
-## 6. Armazenamento e Segurança de Dados
+## 6. Data Storage and Security
 
-### 6.1. Localização dos Dados
-Seus dados são armazenados em servidores seguros localizados no Brasil ou em países com proteção adequada conforme LGPD.
+### 6.1. Data Location
+Your data is stored on secure servers located in regions with adequate data protection.
 
-### 6.2. Medidas de Segurança
+### 6.2. Security Measures
 
-Implementamos medidas técnicas e organizacionais para proteger seus dados:
+We implement technical and organizational measures to protect your data:
 
-- **Criptografia:** Senhas e dados sensíveis são criptografados
-- **Controle de acesso:** Autenticação multifator e permissões granulares
-- **Firewall e monitoramento:** Proteção contra acessos não autorizados
-- **Backups regulares:** Recuperação de dados em caso de incidentes
-- **Auditorias de segurança:** Revisões periódicas de vulnerabilidades
-- **Treinamento:** Capacitação de equipe sobre proteção de dados
+- **Encryption:** Passwords and sensitive data are encrypted
+- **Access Control:** Multi-factor authentication and granular permissions
+- **Firewall and Monitoring:** Protection against unauthorized access
+- **Regular Backups:** Data recovery in case of incidents
+- **Security Audits:** Periodic vulnerability reviews
+- **Training:** Staff training on data protection
 
-### 6.3. Retenção de Dados
+### 6.3. Data Retention
 
-Mantemos seus dados pelo tempo necessário para:
-- **Dados de conta ativa:** Enquanto a conta estiver ativa
-- **Dados transacionais:** 5 anos (conforme legislação fiscal)
-- **Logs de auditoria:** 6 meses a 1 ano
-- **Dados de clientes inativos:** Até 2 anos após última interação
+We retain your data for the time necessary to:
+- **Active Account Data:** While the account is active
+- **Transaction Data:** 5 years (per tax legislation)
+- **Audit Logs:** 6 months to 1 year
+- **Inactive Customer Data:** Up to 2 years after last interaction
 
-Após esses períodos, os dados são anonimizados ou deletados de forma segura.
+After these periods, data is anonymized or securely deleted.
 
-## 7. Seus Direitos sob a LGPD
+## 7. Your Privacy Rights
 
-De acordo com a Lei Geral de Proteção de Dados, você tem os seguintes direitos:
+You have the following rights regarding your personal data:
 
-### 7.1. Direito de Acesso
-Solicitar cópia dos seus dados pessoais que possuímos.
+### 7.1. Right to Access
+Request a copy of your personal data we hold.
 
-### 7.2. Direito de Retificação
-Corrigir dados incompletos, inexatos ou desatualizados.
+### 7.2. Right to Rectification
+Correct incomplete, inaccurate, or outdated data.
 
-### 7.3. Direito de Exclusão
-Solicitar a eliminação de dados pessoais, exceto quando houver obrigação legal de retenção.
+### 7.3. Right to Deletion
+Request deletion of personal data, except when legal retention is required.
 
-### 7.4. Direito à Portabilidade
-Receber seus dados em formato estruturado e legível por máquina.
+### 7.4. Right to Data Portability
+Receive your data in a structured, machine-readable format.
 
-### 7.5. Direito de Oposição
-Opor-se ao processamento de dados em determinadas situações.
+### 7.5. Right to Object
+Object to data processing in certain situations.
 
-### 7.6. Direito de Revogar Consentimento
-Retirar o consentimento para processamento de dados a qualquer momento.
+### 7.6. Right to Withdraw Consent
+Withdraw consent for data processing at any time.
 
-### 7.7. Direito à Informação
-Obter informações sobre entidades públicas e privadas com as quais compartilhamos dados.
+### 7.7. Right to Information
+Obtain information about public and private entities with whom we share data.
 
-### 7.8. Exclusão de Conta
+### 7.8. Account Deletion
 
-Para excluir sua conta:
-1. **Dentro do aplicativo:** Acesse Configurações > Conta > Excluir Conta
-2. **Por e-mail:** Envie solicitação para privacy@backstagecinema.com.br
-3. **Por telefone:** Entre em contato com nosso suporte
+To delete your account:
+1. **Within the App:** Go to Settings > Account > Delete Account
+2. **By Email:** Send request to privacy@backstagecinema.com
+3. **By Phone:** Contact our support team
 
-Processaremos sua solicitação em até 15 dias úteis.
+We will process your request within 15 business days.
 
-## 8. Cookies e Tecnologias Similares
+## 8. Cookies and Similar Technologies
 
-### 8.1. Uso de Cookies
+### 8.1. Cookie Usage
 
-Utilizamos cookies e tecnologias similares para:
-- Manter sessões de usuário autenticadas
-- Lembrar preferências e configurações
-- Analisar uso do aplicativo
-- Melhorar desempenho e segurança
+We use cookies and similar technologies to:
+- Maintain authenticated user sessions
+- Remember preferences and settings
+- Analyze application usage
+- Improve performance and security
 
-### 8.2. Gerenciamento de Cookies
+### 8.2. Cookie Management
 
-Você pode gerenciar cookies através das configurações do seu navegador ou dispositivo. No entanto, desabilitar cookies pode afetar a funcionalidade do aplicativo.
+You can manage cookies through your browser or device settings. However, disabling cookies may affect application functionality.
 
-## 9. Privacidade de Menores
+## 9. Children's Privacy
 
-Nosso serviço é destinado a empresas e profissionais maiores de 18 anos. Não coletamos intencionalmente informações de menores de idade.
+Our service is intended for businesses and professionals over 18 years of age. We do not intentionally collect information from minors.
 
-Dados de clientes menores de 18 anos são coletados apenas com CPF opcional e para fins de emissão de ingresso com classificação indicativa apropriada.
+Customer data for minors under 18 is collected only with optional ID for ticketing purposes with appropriate age ratings.
 
-## 10. Links para Sites de Terceiros
+## 10. Third-Party Links
 
-Nosso aplicativo pode conter links para sites externos (ex: sites de distribuidoras de filmes, ANCINE). Não somos responsáveis pelas práticas de privacidade desses sites. Recomendamos ler as políticas de privacidade de cada site visitado.
+Our application may contain links to external websites (e.g., movie distributor sites). We are not responsible for the privacy practices of these sites. We recommend reading the privacy policies of each site you visit.
 
-## 11. Transferência Internacional de Dados
+## 11. International Data Transfers
 
-Em caso de transferência de dados para fora do Brasil, garantimos que:
-- O país de destino oferece nível adequado de proteção de dados, OU
-- Utilizamos cláusulas contratuais padrão aprovadas pela ANPD (Autoridade Nacional de Proteção de Dados)
+In case of data transfers outside your country, we ensure that:
+- The destination country offers adequate level of data protection, OR
+- We use standard contractual clauses approved by data protection authorities
 
-## 12. Notificação de Violação de Dados
+## 12. Data Breach Notification
 
-Em caso de incidente de segurança que possa representar risco aos seus direitos e liberdades, notificaremos:
-- **Você:** Dentro de 72 horas após tomarmos conhecimento
-- **ANPD:** Conforme prazos estabelecidos pela autoridade
+In case of a security incident that may pose a risk to your rights and freedoms, we will notify:
+- **You:** Within 72 hours after becoming aware
+- **Data Protection Authorities:** According to timelines established by the authority
 
-## 13. Alterações nesta Política de Privacidade
+## 13. Changes to This Privacy Policy
 
-Podemos atualizar esta Política de Privacidade periodicamente. Notificaremos sobre mudanças significativas através de:
-- Aviso no aplicativo
-- E-mail para usuários cadastrados
-- Atualização da data no topo deste documento
+We may update this Privacy Policy periodically. We will notify you of significant changes through:
+- Notice in the application
+- Email to registered users
+- Update of the date at the top of this document
 
-Recomendamos revisar esta política regularmente.
+We recommend reviewing this policy regularly.
 
-## 14. Encarregado de Proteção de Dados (DPO)
+## 14. Data Protection Officer (DPO)
 
-Para exercer seus direitos ou esclarecer dúvidas sobre esta política, entre em contato com nosso Encarregado de Proteção de Dados:
+To exercise your rights or clarify questions about this policy, contact our Data Protection Officer:
 
-**E-mail:** dpo@backstagecinema.com.br
-**Endereço:** [Endereço da empresa]
-**Telefone:** [Telefone de contato]
+**Email:** dpo@backstagecinema.com
+**Address:** [Company Address]
+**Phone:** [Contact Phone]
 
-## 15. Informações de Contato
+## 15. Contact Information
 
 **Backstage Cinema Management**
-**E-mail de privacidade:** privacy@backstagecinema.com.br
-**E-mail de suporte:** support@backstagecinema.com.br
-**Website:** [URL do site]
+**Privacy Email:** privacy@backstagecinema.com
+**Support Email:** support@backstagecinema.com
+**Website:** [Website URL]
 
-## 16. Autoridade de Proteção de Dados
+## 16. Data Protection Authority
 
-Se você não estiver satisfeito com nossas respostas, pode contatar a Autoridade Nacional de Proteção de Dados (ANPD):
+If you are not satisfied with our responses, you may contact your local Data Protection Authority.
 
-**Website:** https://www.gov.br/anpd/
-**E-mail:** atendimento@anpd.gov.br
+## 17. Consent
 
-## 17. Consentimento
+By using Backstage Cinema Management, you acknowledge that you have read and understood this Privacy Policy and agree to the processing of your personal data as described.
 
-Ao utilizar o Backstage Cinema Management, você reconhece que leu e compreendeu esta Política de Privacidade e concorda com o processamento de seus dados pessoais conforme descrito.
-
-Para fins de marketing (newsletters, promoções), solicitaremos seu consentimento explícito, que pode ser revogado a qualquer momento.
+For marketing purposes (newsletters, promotions), we will request your explicit consent, which can be withdrawn at any time.
 
 ---
 
-**Última revisão:** 20 de novembro de 2025
-**Versão:** 1.0
+**Last Revision:** November 20, 2025
+**Version:** 1.0
