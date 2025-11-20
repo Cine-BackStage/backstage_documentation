@@ -10,7 +10,7 @@ The diagram above shows the complete physical database structure with all tables
 
 ### Diagram Source Code
 
-The diagram is generated from code using [dbdiagram.io](https://dbdiagram.io/). The source DBML file is available at [`database-schema.dbml`](../../database-schema.dbml) and can be imported into dbdiagram.io for editing and regeneration.
+The diagram is generated from code using [dbdiagram.io](https://dbdiagram.io/). The source DBML file is available at [`database-schema.dbml`](../database-schema.dbml) and can be imported into dbdiagram.io for editing and regeneration.
 
 ## 📋 Overview
 
